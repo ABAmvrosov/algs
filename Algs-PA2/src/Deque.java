@@ -1,13 +1,13 @@
 import edu.princeton.cs.algs4.StdOut;
-
 import java.util.Iterator;
 
 
 public class Deque<Item> implements Iterable<Item> {
-    private int N; // size
-    private Node first;
-    private Node last;
+    private int N;      // size
+    private Node first; // Item in Front of deque
+    private Node last;  // Item in End of deque
 
+    // Inner class
     private class Node {
         Item item;
         Node next;
@@ -21,37 +21,43 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Deque() {} // construct an empty deque
 
+    // Validating item for Null. PA2 Requirements.
     private void validate(Item item) throws java.lang.NullPointerException {
         if (item == null) {throw new java.lang.NullPointerException();}
     }
 
+    // Is the deque empty?
     public boolean isEmpty() {
-        return first == null;
-    }                 // is the deque empty?
+        return N == 0;
+    }
 
-    public int size() {return N;}                        // return the number of items on the deque
+    // Return the number of items on the deque
+    public int size() {return N;}
 
+    // Add the item to the Front
     public void addFirst(Item item){
         validate(item);
         Node oldfirst = first;
-        Node newNode = new Node(null,item,oldfirst);
-        first = newNode;
+        Node temp = new Node(null,item,oldfirst);
+        first = temp;
         if (oldfirst==null) {last=first;}
         else oldfirst.prev = first;
         N++;
 
-    }          // add the item to the front
+    }
 
+    // Add the item to the End
     public void addLast(Item item){
         validate(item);
         Node oldlast = last;
-        Node newNode = new Node(oldlast,item,null);
-        last = newNode;
+        Node temp = new Node(oldlast,item,null);
+        last = temp;
         if (oldlast==null) {first=last;}
         else oldlast.next=last;
         N++;
-    }           // add the item to the end
+    }
 
+    // Remove and return the item from the front
     public Item removeFirst() throws java.util.NoSuchElementException {
         if (isEmpty()) {throw new java.util.NoSuchElementException();}
         Item item = first.item;
@@ -65,8 +71,9 @@ public class Deque<Item> implements Iterable<Item> {
             next.prev = null;
         N--;
         return item;
-    }                // remove and return the item from the front
+    }
 
+    // Remove and return the item from the end
     public Item removeLast() throws java.util.NoSuchElementException {
         if (isEmpty()) {throw new java.util.NoSuchElementException();}
         Item item = last.item;
@@ -80,10 +87,12 @@ public class Deque<Item> implements Iterable<Item> {
             prev.next = null;
         N--;
         return item;
-    }                 // remove and return the item from the end
+    }
 
-    public Iterator<Item> iterator(){return new ListIterator();} // return an iterator over items in order from front to end
+    // Return an iterator over items in order from front to end
+    public Iterator<Item> iterator(){return new ListIterator();}
 
+    // Implementation of ListIterator
     private class ListIterator implements Iterator<Item> {
         private Node current = first;
 
@@ -97,6 +106,7 @@ public class Deque<Item> implements Iterable<Item> {
         public void remove() throws java.lang.UnsupportedOperationException {throw new java.lang.UnsupportedOperationException();}
     }
 
+    // Client for unit testing
     public static void main(String[] args){
         Deque<Integer> deque = new Deque<Integer>();
         deque.addFirst(1);
@@ -113,5 +123,5 @@ public class Deque<Item> implements Iterable<Item> {
         StdOut.println("Size of deque is " + deque.size());
         StdOut.println("Is empty? " + deque.isEmpty());
 
-    }   // unit testing
+    }
 }
