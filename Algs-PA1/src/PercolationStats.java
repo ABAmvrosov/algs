@@ -1,6 +1,3 @@
-/**
- * Created by юзер on 09.09.2015.
- */
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
