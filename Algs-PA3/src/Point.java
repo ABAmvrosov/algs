@@ -102,7 +102,11 @@ public class Point implements Comparable<Point> {
         parr[4] = a5;
         parr[5] = a6;
         parr[6] = a7;
+        StdDraw.show(0);
+        StdDraw.setXscale(0, 5);
+        StdDraw.setYscale(0, 5);
         for (Point x : parr) { x.draw(); }
+        StdDraw.show();
         a1.drawTo(a2);
         a3.drawTo(a5);
         a1.drawTo(a3);
