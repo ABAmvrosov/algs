@@ -1,7 +1,7 @@
-import java.awt.*;
-import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
     private final int x;     // x-coordinate of this point
@@ -11,11 +11,9 @@ public class Point implements Comparable<Point> {
         this.x = x;
         this.y = y;
     }
-
     public void draw() {
         StdDraw.point(x, y);
     }
-
     public void drawTo(Point that) {
         StdDraw.line(this.x, this.y, that.x, that.y);
     }
@@ -32,10 +30,10 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
+        if (that.y == this.y && that.x == this.x) { return Double.NEGATIVE_INFINITY; } // same point
         if (that.y == this.y) { return +0.0; } // horizontal
         if (that.x == this.x) { return Double.POSITIVE_INFINITY; } // vertical
-        if (that.y == this.y && that.x == this.x) { return Double.NEGATIVE_INFINITY; } // same point
-        else { return (double) ((that.y - this.y) / (that.x - this.x)); }
+        else { return  ((double) (that.y - this.y) / (double) (that.x - this.x)); }
     }
 
     /**
@@ -62,12 +60,29 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        return new slopeOrder();
+        return new OrderBySlope();
     }
 
-    private class slopeOrder implements Comparator<Point> {
+    private class OrderBySlope implements Comparator<Point> {
         public int compare(Point a1, Point a2) {
-            return (int) (a1.slopeTo(Point.this) - a2.slopeTo(Point.this));
+            double slope1 = a1.slopeTo(Point.this);
+            double slope2 = a2.slopeTo(Point.this);
+            if (slope1 == Double.NEGATIVE_INFINITY && slope2 == Double.NEGATIVE_INFINITY) {
+                return 0;
+            }
+            if (slope1 == Double.POSITIVE_INFINITY && slope2 == Double.POSITIVE_INFINITY) {
+                return 0;
+            }
+            if (slope1 == Double.NEGATIVE_INFINITY | slope1 == Double.POSITIVE_INFINITY) {
+                return 1;
+            }
+            if (slope2 == Double.NEGATIVE_INFINITY | slope2 == Double.POSITIVE_INFINITY) {
+                return -1;
+            }
+            double value = slope1 - slope2;
+            if (value < 0) { return -1; }
+            if (value == 0) { return 0; }
+            return 1;
         }
     }
 
@@ -87,37 +102,13 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        Point a1 = new Point(1,1);
-        Point a2 = new Point(3,1);
-        Point a3 = new Point(2,3);
-        Point a4 = new Point(4,3);
-        Point a5 = new Point(2,4);
-        Point a6 = new Point(2,2);
-        Point a7 = new Point(3,3);
-        Point[] parr = new Point[7];
-        parr[0] = a1;
-        parr[1] = a3;
-        parr[2] = a2;
-        parr[3] = a4;
-        parr[4] = a5;
-        parr[5] = a6;
-        parr[6] = a7;
-        StdDraw.show(0);
-        StdDraw.setXscale(0, 5);
-        StdDraw.setYscale(0, 5);
-        for (Point x : parr) { x.draw(); }
-        StdDraw.show();
-        a1.drawTo(a2);
-        a3.drawTo(a5);
-        a1.drawTo(a3);
-        a2.drawTo(a4);
-        a1.drawTo(a5);
-        a2.drawTo(a3);
-        StdOut.println(a1.slopeTo(a2)); // horizontal
-        StdOut.println(a3.slopeTo(a5)); // vertical
-        StdOut.println(a1.slopeTo(a3)); // slope1
-        StdOut.println(a2.slopeTo(a4)); // slope1
-        StdOut.println(a1.slopeTo(a5)); // slope2
-        StdOut.println(a2.slopeTo(a3)); // slope3
+        Point p = new Point(300, 170);
+        Point q = new Point(454, 170);
+        Point r = new Point(296, 359);
+        StdOut.println(p.slopeOrder().compare(q, r));
+        //StdOut.println(p.slopeOrder().compare(r, s));
+        //StdOut.println(p.slopeOrder().compare(q, r));
+        //StdOut.println(p.slopeTo(q));
+        //StdOut.println(p.slopeTo(r));
     }
 }
