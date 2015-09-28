@@ -67,21 +67,17 @@ public class Point implements Comparable<Point> {
         public int compare(Point a1, Point a2) {
             double slope1 = a1.slopeTo(Point.this);
             double slope2 = a2.slopeTo(Point.this);
-            if (slope1 == Double.NEGATIVE_INFINITY && slope2 == Double.NEGATIVE_INFINITY) {
+            if (slope1 == slope2) {
                 return 0;
             }
-            if (slope1 == Double.POSITIVE_INFINITY && slope2 == Double.POSITIVE_INFINITY) {
-                return 0;
-            }
-            if (slope1 == Double.NEGATIVE_INFINITY | slope1 == Double.POSITIVE_INFINITY) {
-                return 1;
-            }
-            if (slope2 == Double.NEGATIVE_INFINITY | slope2 == Double.POSITIVE_INFINITY) {
+            if (slope1 == Double.NEGATIVE_INFINITY | slope2 == Double.POSITIVE_INFINITY) {
                 return -1;
+            }
+            if (slope2 == Double.NEGATIVE_INFINITY | slope1 == Double.POSITIVE_INFINITY) {
+                return 1;
             }
             double value = slope1 - slope2;
             if (value < 0) { return -1; }
-            if (value == 0) { return 0; }
             return 1;
         }
     }

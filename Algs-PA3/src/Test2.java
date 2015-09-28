@@ -2,6 +2,8 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.awt.*;
+
 public class Test2 {
 
     public static void main(String[] args) {
@@ -20,6 +22,8 @@ public class Test2 {
         StdDraw.show(0);
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
+        StdDraw.setPenRadius(0.01);
+        StdDraw.setPenColor(Color.BLUE);
         for (Point p : points) {
             p.draw();
         }
@@ -28,6 +32,8 @@ public class Test2 {
         // print and draw the line segments
         BruteCollinearPoints collinear = new BruteCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
+            StdDraw.setPenColor(Color.BLACK);
+            StdDraw.setPenRadius(0.001);
             StdOut.println(segment);
             segment.draw();
         }
