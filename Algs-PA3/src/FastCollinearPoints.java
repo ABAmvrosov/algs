@@ -7,14 +7,18 @@ public class FastCollinearPoints {
     // finds all line segments containing 4 or more points
     public FastCollinearPoints(Point[] points) {
         arr = new ArrayList<LineSegment>();
+        int a;
         for (Point point : points) {
             Arrays.sort(points, point.slopeOrder());
+
             for (int j = 1; j < points.length - 3; j++) {
-                int k = 1;
-                while (point.slopeTo(points[j]) == point.slopeTo(points[j + k])) {
-                    k++;
-                    if (k >= 2 && !(point.slopeTo(points[j]) == point.slopeTo(points[j + k]))) {
-                        arr.add(new LineSegment(point, points[j+k-1]));
+                for (int k = j+1; k < points.length; k++) {
+                    a = 0;
+                    while (points[j].slopeTo(points[k + a]) == 0) {
+                        a++;
+                    }
+                    if (a >=1) {
+                        arr.add(new LineSegment(point, points[k + a]));
                     }
                 }
             }

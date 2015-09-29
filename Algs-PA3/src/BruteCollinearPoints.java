@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class BruteCollinearPoints {
     private ArrayList<LineSegment> arr;
@@ -8,20 +7,30 @@ public class BruteCollinearPoints {
     public BruteCollinearPoints(Point[] points) {
         if (points == null) { throw new java.lang.NullPointerException(); }
         arr = new ArrayList<LineSegment>();
-        for (Point p : points) {
+        Point min;
+        Point max;
+        for (int i1 = 0; i1 < points.length-3; i1++) {
 
-            for (Point p2 : points) {
-                if (p.compareTo(p2) == 0) { continue; }
+            for (int i2 = i1+1; i2 < points.length-2; i2++) {
+                if (points[i1].compareTo(points[i2]) == 0) { throw new java.lang.IllegalArgumentException(); }
+                min = points[i1];
+                max = points[i1];
+                if (min.compareTo(points[i2]) > 0) { min = points[i2]; }
+                if (max.compareTo(points[i2]) < 0) { max = points[i2]; }
 
-                for (Point p3 : points) {
-                    if (p.compareTo(p3) == 0 | p2.compareTo(p3) == 0) { continue; }
-                    if (p.slopeTo(p2) == p.slopeTo(p3)) {
+                for (int i3 = i2+1; i3 < points.length-1; i3++) {
+                    if (points[i2].compareTo(points[i3]) == 0) { throw new java.lang.IllegalArgumentException(); }
+                    if (points[i1].slopeTo(points[i2]) == points[i1].slopeTo(points[i3])) {
+                        if (min.compareTo(points[i3]) > 0) { min = points[i3]; }
+                        if (max.compareTo(points[i3]) < 0) { max = points[i3]; }
 
-                        for (Point p4 : points) {
-                            if (p.compareTo(p4) == 0 | p2.compareTo(p4) == 0 | p3.compareTo(p4) == 0) { continue; }
-                            if (p.slopeTo(p2) == p.slopeTo(p4)) {
-
-                                arr.add(new LineSegment(p, p4));
+                        for (int i4 = i3 + 1; i4 < points.length; i4++) {
+                            if (points[i1].compareTo(points[i4]) == 0) { throw new java.lang.IllegalArgumentException(); }
+                            if (points[i2].compareTo(points[i4]) == 0) { throw new java.lang.IllegalArgumentException(); }
+                            if (points[i1].slopeTo(points[i2]) == points[i1].slopeTo(points[i4])) {
+                                if (min.compareTo(points[i4]) > 0) { min = points[i4]; }
+                                if (max.compareTo(points[i4]) < 0) { max = points[i4]; }
+                                arr.add(new LineSegment(min, max));
                             }
                         }
                     }
