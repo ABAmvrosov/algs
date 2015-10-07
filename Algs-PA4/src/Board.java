@@ -5,8 +5,8 @@ import edu.princeton.cs.algs4.StdOut;
 public class Board {
     private int N; //dimension of board
     private int[][] myblocks;
-    private int blankPosX;
-    private int blankPosY;
+    private int blank_i;
+    private int blank_j;
 
     /*--------------------------------------------------
     construct a board from an N-by-N array of blocks
@@ -17,10 +17,7 @@ public class Board {
         myblocks = new int[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (blocks[i][j] == 0) {
-                    blankPosX = i;
-                    blankPosY = j;
-                }
+                if (blocks[i][j] == 0) { blank_i = i; blank_j = j; }
                 myblocks[i][j] = blocks[i][j];
             }
         }
@@ -39,24 +36,27 @@ public class Board {
                 if (myblocks[i][j] != N*i+j+1) { hamming++; }
             }
         }
-        return --hamming;
+        if (myblocks[N-1][N-1] == 0) { hamming--; }
+        return hamming;
     }
 
     // sum of Manhattan distances between blocks and goal
     public int manhattan() {
         int manhattan = 0;
-        int value, raw, col;
+        int dif, draw, dcol;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
+                if (myblocks[i][j] == 0) {
+                    dif = Math.abs((N*i+j+1) - N*N);
+                    draw = dif / N;
+                    dcol = dif % N;
+                    manhattan += (draw + dcol);
+                }
                 if (myblocks[i][j] != 0 && myblocks[i][j] != N*i+j+1) {
-                    value = myblocks[i][j];
-                    if (value % N == 0) { raw = (value / N) - 1; }
-                    else { raw = value / N; }
-                    if (value % N == 0) {
-                        col = N - 1;
-                    }
-                    else { col = value - N*raw - 1; }
-                    manhattan += (Math.abs(raw - i) + Math.abs(col - j));
+                    dif = Math.abs((N*i+j+1) - myblocks[i][j]);
+                    draw = dif / N;
+                    dcol = dif % N;
+                    manhattan += (draw + dcol);
                 }
             }
         }
@@ -67,7 +67,7 @@ public class Board {
     public boolean isGoal() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (myblocks[i][j] == 0 && (N*i+j+1) != N*N) { return false; }
+                if (myblocks[i][j] == 0 && (N*i+j+1) != N*N) {return false; }
                 if (myblocks[i][j] != 0 && myblocks[i][j] != N*i+j+1) { return false; }
             }
         }
@@ -111,36 +111,28 @@ public class Board {
     // all neighboring boards
     public Iterable<Board> neighbors() {
         Stack<Board> stack = new Stack<Board>();
-        if (blankPosX != 0) {
+        if (blank_i != 0) {
             Board tmp = new Board(this.myblocks);
-            tmp.myblocks[blankPosX][blankPosY] = tmp.myblocks[blankPosX - 1][blankPosY];
-            tmp.myblocks[blankPosX - 1][blankPosY] = 0;
-            tmp.blankPosX = blankPosX - 1;
-            tmp.blankPosY = blankPosY;
+            tmp.myblocks[blank_i][blank_j] = tmp.myblocks[blank_i - 1][blank_j];
+            tmp.myblocks[blank_i - 1][blank_j] = 0;
             stack.push(tmp);
         }
-        if (blankPosX != N-1) {
+        if (blank_i != 2) {
             Board tmp = new Board(this.myblocks);
-            tmp.myblocks[blankPosX][blankPosY] = tmp.myblocks[blankPosX + 1][blankPosY];
-            tmp.myblocks[blankPosX + 1][blankPosY] = 0;
-            tmp.blankPosX = blankPosX + 1;
-            tmp.blankPosY = blankPosY;
+            tmp.myblocks[blank_i][blank_j] = tmp.myblocks[blank_i + 1][blank_j];
+            tmp.myblocks[blank_i + 1][blank_j] = 0;
             stack.push(tmp);
         }
-        if (blankPosY != 0) {
+        if (blank_j != 0) {
             Board tmp = new Board(this.myblocks);
-            tmp.myblocks[blankPosX][blankPosY] = tmp.myblocks[blankPosX][blankPosY - 1];
-            tmp.myblocks[blankPosX][blankPosY - 1] = 0;
-            tmp.blankPosX = blankPosX;
-            tmp.blankPosY = blankPosY - 1;
+            tmp.myblocks[blank_i][blank_j] = tmp.myblocks[blank_i][blank_j - 1];
+            tmp.myblocks[blank_i][blank_j - 1] = 0;
             stack.push(tmp);
         }
-        if (blankPosY != N-1) {
+        if (blank_j != 2) {
             Board tmp = new Board(this.myblocks);
-            tmp.myblocks[blankPosX][blankPosY] = tmp.myblocks[blankPosX][blankPosY + 1];
-            tmp.myblocks[blankPosX][blankPosY + 1] = 0;
-            tmp.blankPosX = blankPosX;
-            tmp.blankPosY = blankPosY + 1;
+            tmp.myblocks[blank_i][blank_j] = tmp.myblocks[blank_i][blank_j + 1];
+            tmp.myblocks[blank_i][blank_j + 1] = 0;
             stack.push(tmp);
         }
         return stack;
@@ -161,7 +153,7 @@ public class Board {
 
     // unit tests (not graded)
     public static void main(String[] args) {
-
+        /*
         In in = new In(args[0]);
         int N = in.readInt();
         int[][] blocks = new int[N][N];
@@ -171,7 +163,7 @@ public class Board {
             }
         }
         Board initial = new Board(blocks);
-        /*
+
         In in2 = new In(args[1]);
         int N2 = in2.readInt();
         int[][] blocks2 = new int[N2][N2];
@@ -181,16 +173,16 @@ public class Board {
             }
         }
         Board initial2 = new Board(blocks2);
-        */
+
         //StdOut.println(initial.hamming());
-        StdOut.println(initial.manhattan());
+        //StdOut.println(initial.manhattan());
         //StdOut.println(initial.isGoal());
-        //StdOut.println("initial \n" + initial.toString());
-        //StdOut.println("neighbors \n" + initial.neighbors());
-        //StdOut.println("twin " + initial.twin());
+        StdOut.println("initial \n" + initial.toString());
+        StdOut.println("neighbors \n" + initial.neighbors());
+        StdOut.println("twin " + initial.twin());
         //StdOut.println(initial.blank_i + " " + initial.blank_j);
         //StdOut.println(initial2.toString());
         //StdOut.println(initial.equals(initial2));
-
+        */
     }
 }
