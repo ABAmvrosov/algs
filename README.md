@@ -14,3 +14,6 @@ Solved without HashMap.
 
 - PA4
 Total Score	100 / 100
+
+- PA5
+Total Score	100 / 100
